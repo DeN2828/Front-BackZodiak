@@ -1,21 +1,39 @@
-"use strict";
-const express = require('express');
-const cors = require('cors');
+const express = require("express");
+   
 const app = express();
-const port = 3001;
-const corsOptions = {
-    origin: 4200,
-    optionSuccessStatus: 200
-};
-app.use(cors(corsOptions));
-app.listen(port, () => {
-    console.log('Listening on port', port);
+   
+// создаем парсер для данных в формате json
+const jsonParser = express.json();
+ 
+// настройка CORS
+app.use(function(req, res, next) {
+   res.header("Access-Control-Allow-Origin", "*");
+   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+   res.header("Access-Control-Allow-Methods", "GET, PATCH, PUT, POST, DELETE, OPTIONS");
+   next();  // передаем обработку запроса методу app.post("/postuser"...
+ });
+  
+// обработчик по маршруту localhost:3000/postuser
+app.post("/postuser", jsonParser, function (request, response) {
+ 
+    // если не переданы данные, возвращаем ошибку
+    // if(!request.body) return response.sendStatus(400);
+     
+    // получаем данные
+    let date = request.body.name;
+    console.log(date);
+    // имитируем некоторую обработку данных, например, изменим значение userage
+    console.log(date);
+    let zodiac = detect_zodiac(Number(request.query.timestamp));
+    
+    
+     
+    // отправка данных обратно клиенту
+    response.json({"date": zodiac});
 });
-app.get('/zodiac', (req, res) => {
-    let zodiac = detect_zodiac(Number(req.query.timestamp));
-    res.json({ result: zodiac });
-    console.log(res);
-});
+  
+app.listen(3001);
+
 class Zodiac {
     constructor(dateBegin, dateEnd, name) {
         this.dateBegin = dateBegin;
